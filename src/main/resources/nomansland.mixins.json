@@ -65,6 +65,7 @@
     "client.LivingEntityRendererMixin",
     "client.MusicManagerMixin",
     "client.RenderBuffersMixin",
+    "client.SectionCompilerMixin",
     "client.SkinManagerMixin",
     "client.SoundEngineMixin"
   ],
