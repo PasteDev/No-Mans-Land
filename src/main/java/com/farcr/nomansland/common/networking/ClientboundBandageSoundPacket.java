@@ -1,14 +1,12 @@
 package com.farcr.nomansland.common.networking;
 
 import com.farcr.nomansland.NoMansLand;
-import com.farcr.nomansland.client.sound.BandageSoundInstance;
 import io.netty.buffer.ByteBuf;
-import net.minecraft.client.Minecraft;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.player.Player;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 public record ClientboundBandageSoundPacket(int playerId) implements CustomPacketPayload {
@@ -25,13 +23,8 @@ public record ClientboundBandageSoundPacket(int playerId) implements CustomPacke
     }
 
     public void handleData(final IPayloadContext context) {
-        if (context.flow().isClientbound()) {
-            context.enqueueWork(() -> {
-                Entity entity = context.player().level().getEntity(playerId());
-                if (entity instanceof Player p) {
-                    Minecraft.getInstance().getSoundManager().play(new BandageSoundInstance(p));
-                }
-            });
+        if (context.flow().isClientbound() && FMLEnvironment.dist == Dist.CLIENT) {
+            context.enqueueWork(() -> ClientboundBandageSoundPacketClient.handle(this, context));
         }
     }
 }
