@@ -55,7 +55,10 @@ public final class InterpolatedNoiseField {
     public void fill(int startY, int endY, int minX, int minY, int minZ, NoiseFieldFiller filler) {
         // find unfilled layers
         fillMask.clear();
-        fillMask.set(Math.max(0, startY >> yCellScale), Math.min(yCellCount - 1, endY >> yCellScale) + 1);
+        int startCell = Math.max(0, startY >> yCellScale);
+        int endCellExclusive = Math.min(yCellCount - 1, endY >> yCellScale) + 1;
+        if (startCell >= endCellExclusive) return;
+        fillMask.set(startCell, endCellExclusive);
         fillMask.andNot(filledLayers);
         // fill them
         for (int startCellY = fillMask.nextSetBit(0); startCellY >= 0; startCellY = fillMask.nextSetBit(startCellY + 1)) {
